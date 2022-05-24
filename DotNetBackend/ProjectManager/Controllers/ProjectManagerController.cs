@@ -248,6 +248,26 @@ namespace ProjectManager.Controllers
             int id = GetMaxIdFromTable("times");
             if (id == -1) return BadRequest();
 
+            sql = $"SELECT numberOfHours from times WHERE date = ' ${time.date}'";
+            command = new SqlCommand(sql, db);
+            try
+            {
+                reader = command.ExecuteReader();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+            int sumHours = time.numberOfHours;
+            while (reader.Read())
+            {
+                sumHours += Convert.ToInt32(reader[0]);
+            }
+            reader.Close();
+
+            if (sumHours > 24)
+                return BadRequest();
+
             sql = $"INSERT INTO times (id, text, taskId, date, numberOfHours) VALUES ({id}, '{time.text}', {time.taskId}, '{time.date}', {time.numberOfHours})";
             command = new SqlCommand(sql, db);
             try

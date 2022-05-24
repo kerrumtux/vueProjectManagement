@@ -64,7 +64,7 @@ export default {
 
 <style lang="scss" scoped>
   section {
-    margin-bottom: 2%;
+    margin-bottom: 1%;
   }
 
   .inputContainer{

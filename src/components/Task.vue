@@ -17,12 +17,12 @@
         <button v-show="edit" :style="cssVars" class="deleteTask" style="background-color: red;" @click="$emit('deleteTask', elem.id)">
           DELETE
         </button>
-        <button class="btnViewTime" @click="viewTimeE">Time Manager</button>
+        <button class="btnViewTime" @click="viewTimeE">TIME MNG.</button>
         <button v-show="!edit" :style="cssVars" @click="view">
           EDIT
         </button>
       </div>
-      <div v-show="timeView" style="background-color: black; opacity: 0.5; width: 100%; height: 100%; position: fixed; top: 0; z-index: 1;"></div>
+      <div class="blackoutLayer" v-show="timeView"></div>
 
       <div v-show="timeView" id="popupWindow">
         <div class="selectViewByDay">
@@ -33,7 +33,8 @@
           </select>
         </div>
         <div v-if="viewType===-1" class="selectViewByDay"><input @change="viewTimeByDay" type="date"/></div>
-        <button @click="viewTimeE" style="position: absolute; right: 0; top: 0;">CLOSE</button>
+        <!-- <div class="closeButton" @click="viewTimeE"><span>&#10006;</span></div> -->
+        <div class="closeButton" @click="viewTimeE"></div>
         <AddUsedTime @addElement="addTimeUsed" />
         <Times :elements=timesUsedSpecific />
       </div>
@@ -58,24 +59,24 @@ export default {
   },
   methods: {
     addTimeUsed (el) {
-      var request = new XMLHttpRequest()
-      console.log(el.text)
-      const data = JSON.stringify({
+      const data = {
         text: el.text,
         taskId: this.elem.id,
         date: el.date,
         numberOfHours: el.numberOfHours
-      })
-      let summ = 0
+      }
+      let summ = data.numberOfHours
+
       this.timesUsed.forEach(e => {
-        if (e.date === el.date) summ = e.numberOfHours
+        if (e.date === el.date) summ += e.numberOfHours
       })
 
-      if ((summ + el.numberOfHours) > 24) {
+      if (summ > 24) {
         alert('Количество часов за эту дату превышает 24. Проводка не может быть добавлена')
         return
       }
 
+      const request = new XMLHttpRequest()
       request.onreadystatechange = () => {
         if (request.readyState === 4 && request.status === 200) {
           this.timesUsed = [...this.timesUsed, el]
@@ -85,7 +86,7 @@ export default {
 
       request.open('POST', 'https://localhost:5001/api/timeAdd')
       request.setRequestHeader('content-type', 'application/json')
-      request.send(data)
+      request.send(JSON.stringify(data))
     },
     saveTime () {
       localStorage.setItem('times' + this.elem.id, JSON.stringify(this.timesUsed))
@@ -97,21 +98,17 @@ export default {
         if (xhr.status !== 200) {
           return
         }
-        console.log(typeof JSON.parse(xhr.response))
-        console.log(JSON.parse(xhr.response))
         const times = JSON.parse(xhr.response)
         this.timesUsed = times
         this.timesUsedSpecific = times
       }
       xhr.send()
-      console.log(xhr)
     },
     viewTimeE () {
       this.loadTimes()
       this.timeView = !this.timeView
     },
     selectViewer (e) {
-      console.log(e.target.value)
       switch (e.target.value) {
         case 'all' :
           this.timesUsedSpecific = this.timesUsed
@@ -161,6 +158,7 @@ export default {
   .main{
     background-color: black;
     height: 4rem;
+    margin-bottom: .3%;
   }
   #nameContainer, .main > input{
     width: 80%;
@@ -173,7 +171,7 @@ export default {
   }
   #nameContainer{
     height: 100%;
-    border: 1px solid white;
+    border-left: 4px solid white;
   }
   p{
     position: relative;
@@ -181,7 +179,7 @@ export default {
     transform: translateY(-50%);
   }
   #popupWindow .selectViewByDay {
-    width: 30%;
+    width: 15%;
     font-size: 14px;
     height: 4rem;
     color: 'var(--dark)';
@@ -218,15 +216,43 @@ export default {
     transform: translate(-50%, -50%);
     width: 90%;
     height: 85%;
-    background-color: black;
+    background-color: var(--bg-color);
     z-index: 2;
     overflow: scroll;
     scrollbar-width: none;
   }
   select{
-    // appearance: none;
     border-radius:0px !important;
     border: 0;
     border-right: 1px solid black;
+  }
+  .closeButton{
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 2rem;
+    height: 2rem;
+    margin: 1rem 1rem 0 0;
+    cursor: pointer;
+    background: url("../../public/icon/close.png") 0 0/auto 100% no-repeat;
+
+    span{
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2rem;
+    }
+  }
+
+  .blackoutLayer{
+    background-color: black;
+    opacity: 0.5;
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
   }
 </style>

@@ -9,12 +9,19 @@
 
 <script>
 import Project from './Project.vue'
-import MixinElements from './mixins/MixinElements'
 export default {
   name: 'Projects',
-  mixins: [MixinElements],
+  props: {
+    elements: Array
+  },
+  emits: ['deleteProject', 'activeProject', 'editText'],
   components: {
     Project
+  },
+  methods: {
+    editTextEvent (id, value) {
+      this.$emit('editText', id, value)
+    }
   }
 }
 </script>

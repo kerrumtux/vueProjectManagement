@@ -1,21 +1,19 @@
 <template>
   <div v-for="elem in elements" :key="elem.id" >
     <div class="main">
-        <p>{{ elem.text }}</p>
-        <p>{{ elem.numberOfHours }}</p>
-        <p>{{ elem.date }}</p>
+        <span>{{ elem.text }}</span>
+        <span>{{ elem.numberOfHours }}</span>
+        <span>{{ elem.date }}</span>
     </div>
   </div>
 </template>
 
 <script>
-import MixinElements from './mixins/MixinElements'
 export default {
   name: 'Times',
   props: {
     elements: Array
-  },
-  mixins: [MixinElements]
+  }
 }
 </script>
 
@@ -24,12 +22,10 @@ export default {
   .main{
     height: 6rem;
     position: relative;
-    border-bottom: 1px solid black;
-    background-color: var(--bg-color);
+    border-bottom: 3px solid black;
   }
-  p{
+  span{
     font-size: 14pt;
-    width: calc(90%/3);
     display: inline-block;
     margin: 0;
     position: absolute;
@@ -37,10 +33,10 @@ export default {
     transform: translateY(-50%);
     text-align: end;
   }
-  p:nth-child(2){
+  span:nth-child(2){
     left: calc(90%/3);
   }
-  p:nth-child(3){
+  span:nth-child(3){
     left: calc(90% - 90%/3);
   }
 </style>

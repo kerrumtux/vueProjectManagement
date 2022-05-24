@@ -6,17 +6,20 @@
 
 <script>
 import Task from './Task.vue'
-import MixinElements from './mixins/MixinElements'
 export default {
   name: 'Tasks',
   props: {
-    tasks: Array
+    elements: Array
   },
   components: {
     Task
   },
-  mixins: [MixinElements],
-  emits: ['deleteTask', 'activeTask']
+  emits: ['deleteTask', 'activeTask', 'editText'],
+  methods: {
+    editTextEvent (id, value) {
+      this.$emit('editText', id, value)
+    }
+  }
 }
 </script>
 
