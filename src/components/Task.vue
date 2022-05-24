@@ -44,7 +44,6 @@
 import Value from './mixins/Value.js'
 import AddUsedTime from './AddUsedTime.vue'
 import Times from './Times.vue'
-console.log(Value)
 export default {
   name: 'Task',
   mixins: [Value],
@@ -54,7 +53,7 @@ export default {
       timesUsed: [],
       timesUsedSpecific: [],
       timeView: false,
-      viewType: 0 // 0 - все, -1 - за день, 1 - за месяц
+      viewType: 0 // 0 - all, -1 - per day, 1 - per month
     }
   },
   methods: {

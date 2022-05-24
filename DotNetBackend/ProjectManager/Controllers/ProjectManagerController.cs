@@ -18,7 +18,7 @@ namespace ProjectManager.Controllers
 
         public ProjectManagerController()
         {
-            string Connect = "Data Source=DESKTOP-BUIS7DE;Database=projectmanager;Integrated Security = True";
+            string Connect = "Data Source=DESKTOP-BUIS7DE;Database=projectmanager;Integrated Security = True;MultipleActiveResultSets=true";
             db = new SqlConnection(Connect);
             db.Open();
         }
@@ -42,6 +42,7 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
+            reader.Close();
             return Ok(id);
         }
 
@@ -58,6 +59,7 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
+            reader.Close();
             return Ok();
         }
 
@@ -75,6 +77,22 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
+            reader.Close();
+            sql = "select id from tasks where projectId = " + id;
+            command = new SqlCommand(sql, db);
+            try
+            {
+                reader = command.ExecuteReader();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+            while (reader.Read())
+            {
+                DeleteTask(Convert.ToInt32(reader[0]));
+            }
+            reader.Close();
             return Ok();
         }
 
@@ -94,6 +112,7 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
+            reader.Close();
             return Ok();
         }
 
@@ -117,13 +136,13 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
+            reader.Close();
             return Ok(id);
         }
 
         [HttpGet("taskDelete/{id}")]
         public ActionResult DeleteTask(int id)
         {
-
             string sql = "DELETE from tasks WHERE id=" + id;
             SqlCommand command = new SqlCommand(sql, db);
             SqlDataReader reader;
@@ -135,6 +154,18 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
+            reader.Close();
+            sql = "DELETE from times WHERE taskId=" + id;
+            command = new SqlCommand(sql, db);
+            try
+            {
+                reader = command.ExecuteReader();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+            reader.Close();
             return Ok();
         }
 
@@ -154,6 +185,7 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
+            reader.Close();
             return Ok();
         }
 
@@ -171,6 +203,7 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
+            reader.Close();
             return Ok();
         }
 
@@ -225,6 +258,7 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
+            reader.Close();
             return Ok(id);
         }
 
@@ -268,7 +302,6 @@ namespace ProjectManager.Controllers
             catch
             {
                 return tasks;
-
             }
             while (reader.Read()) {
                 PTask task = new PTask();

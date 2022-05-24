@@ -40,7 +40,6 @@
 import Value from './mixins/Value.js'
 import AddElement from './AddElement.vue'
 import Tasks from './Tasks.vue'
-console.log(Value)
 
 export default {
   components: {
