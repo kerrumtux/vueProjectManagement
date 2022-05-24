@@ -1,0 +1,5 @@
+node_modules
+package-lock.json
+DotNetBackend/.vs
+DotNetBackend/ProjectManager/bin
+DotNetBackend/ProjectManager/obj

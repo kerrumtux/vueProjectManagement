@@ -1,0 +1,42 @@
+:root {
+    --fs-body: 1.5rem;
+
+    --text-color: #fbf4e6;
+    --bg-color: #442D25;
+    --dark: rgb(24,24,24);
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 10px;
+}
+
+body {
+    font-family: fantasy;
+
+    font-size: var(--fs-body);
+    color: var(--text-color);
+    background: var(--bg-color);
+    height: 100vh;
+    align-items: center;
+    padding: 2rem;
+
+    display: block;
+    position: relative;
+}
+
+button, input {
+    border: none;
+    outline: none;
+}
+
+button {
+    cursor: pointer;
+}
