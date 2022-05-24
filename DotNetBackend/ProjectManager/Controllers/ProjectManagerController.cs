@@ -42,7 +42,7 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
-            return Ok();
+            return Ok(id);
         }
 
         [HttpPost("projectEditText")]
@@ -117,7 +117,7 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
-            return Ok();
+            return Ok(id);
         }
 
         [HttpGet("taskDelete/{id}")]
@@ -225,7 +225,7 @@ namespace ProjectManager.Controllers
             {
                 return BadRequest();
             }
-            return Ok();
+            return Ok(id);
         }
 
         [HttpGet("GetProjects")]

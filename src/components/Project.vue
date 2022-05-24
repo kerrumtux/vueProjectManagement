@@ -65,9 +65,6 @@ export default {
   props: {
     elem: Object
   },
-  // mounted () {
-  //   this.loadTasks()
-  // },
   methods: {
     addTaskE (el) {
       var request = new XMLHttpRequest()
@@ -77,18 +74,17 @@ export default {
         projectId: this.elem.id
       })
 
-      request.onreadystatechange = function () {
+      request.onreadystatechange = () => {
         if (request.readyState === 4 && request.status === 200) {
+          el.id = parseInt(request.responseText)
+          this.tasks = [...this.tasks, el]
+          this.addTask = false
         }
       }
 
       request.open('POST', 'https://localhost:5001/api/taskAdd')
       request.setRequestHeader('content-type', 'application/json')
       request.send(data)
-
-      this.tasks = [...this.tasks, el]
-
-      this.addTask = false
     },
     saveTask () {
       localStorage.setItem('tasks' + this.elem.id, JSON.stringify(this.tasks))

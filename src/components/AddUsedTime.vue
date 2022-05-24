@@ -35,13 +35,14 @@ export default {
   },
   methods: {
     make () {
-      if (this.val1.trim() === '') return
-
-      if (this.val3.trim() === '') return
+      if (this.val1.trim() === '' || this.val3.trim() === '') {
+        alert('Заполните все необходимые поля')
+        return
+      }
 
       const num = parseInt(this.val2)
       if (Number.isInteger(num) !== true || num > 24 || num < 1) {
-        console.log('error number')
+        alert('Введите число часов от 1 до 24')
         return
       }
 
@@ -94,6 +95,7 @@ export default {
     background-color: white;
     color: black;
     position: relative;
+    cursor: pointer;
 
     span{
       position: absolute;

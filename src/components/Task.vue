@@ -57,9 +57,6 @@ export default {
       viewType: 0 // 0 - все, -1 - за день, 1 - за месяц
     }
   },
-  // mounted () {
-  //   this.loadTimes()
-  // },
   methods: {
     addTimeUsed (el) {
       var request = new XMLHttpRequest()
@@ -70,26 +67,26 @@ export default {
         date: el.date,
         numberOfHours: el.numberOfHours
       })
+      let summ = 0
+      this.timesUsed.forEach(e => {
+        if (e.date === el.date) summ = e.numberOfHours
+      })
 
-      request.onreadystatechange = function () {
+      if ((summ + el.numberOfHours) > 24) {
+        alert('Количество часов за эту дату превышает 24. Проводка не может быть добавлена')
+        return
+      }
+
+      request.onreadystatechange = () => {
         if (request.readyState === 4 && request.status === 200) {
+          this.timesUsed = [...this.timesUsed, el]
+          this.timesUsedSpecific = this.timesUsed
         }
       }
 
       request.open('POST', 'https://localhost:5001/api/timeAdd')
       request.setRequestHeader('content-type', 'application/json')
       request.send(data)
-
-      let summ = 0
-      this.timesUsed.forEach(e => {
-        if (e.date === el.date) summ += e.numberOfHours
-      })
-      if ((summ + el.numberOfHours) > 24) {
-        alert('Количество часов превышает 24. Проводка не может быть добавлена')
-        return
-      }
-      this.timesUsed = [...this.timesUsed, el]
-      this.timesUsedSpecific = this.timesUsed
     },
     saveTime () {
       localStorage.setItem('times' + this.elem.id, JSON.stringify(this.timesUsed))

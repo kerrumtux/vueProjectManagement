@@ -28,16 +28,16 @@ export default {
         text: el.text
       })
 
-      request.onreadystatechange = function () {
+      request.onreadystatechange = () => {
         if (request.readyState === 4 && request.status === 200) {
+          el.id = parseInt(request.responseText)
+          this.projects = [...this.projects, el]
         }
       }
 
       request.open('POST', 'https://localhost:5001/api/projectAdd', true)
       request.setRequestHeader('content-type', 'application/json')
       request.send(data)
-
-      this.projects = [...this.projects, el]
     },
     deleteProject (id) {
       let val = -1
