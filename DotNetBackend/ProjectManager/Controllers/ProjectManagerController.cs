@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProjectManager.Models;
 using Microsoft.Data.SqlClient;
+using System.Text.RegularExpressions;
 
 namespace ProjectManager.Controllers
 {
@@ -24,7 +25,10 @@ namespace ProjectManager.Controllers
         }
 
         [HttpPost("projectAdd")]
-        public ActionResult AddProject(ProjectAddResponse par) {
+        public ActionResult AddProject(Project par) {
+            if (par.text.Trim() == "")
+                return BadRequest();
+
             string sql;
             SqlDataReader reader;
             SqlCommand command;
@@ -48,6 +52,9 @@ namespace ProjectManager.Controllers
 
         [HttpPost("projectEditText")]
         public ActionResult EditProjectText(textEditResponse ter) {
+            if (ter.id == 0 || ter.text.Trim() == "")
+                return BadRequest();
+
             string sql = "UPDATE projects SET text='" + ter.text + "' WHERE id=" + ter.id;
             SqlCommand command = new SqlCommand(sql, db);
             SqlDataReader reader;
@@ -117,8 +124,11 @@ namespace ProjectManager.Controllers
         }
 
         [HttpPost("taskAdd")]
-        public ActionResult AddTask(TaskAddResponse task)
+        public ActionResult AddTask(PTask task)
         {
+            if (task.text.Trim() == "" || task.projectId == 0)
+                return BadRequest();
+
             string sql;
             SqlDataReader reader;
             SqlCommand command;
@@ -192,6 +202,9 @@ namespace ProjectManager.Controllers
         [HttpPost("taskEditText")]
         public ActionResult EditTaskText(textEditResponse ter)
         {
+            if (ter.id == 0 || ter.text.Trim() == "")
+                return BadRequest();
+
             string sql = "UPDATE tasks SET text='" + ter.text + "' WHERE id=" + ter.id;
             SqlCommand command = new SqlCommand(sql, db);
             SqlDataReader reader;
@@ -241,6 +254,8 @@ namespace ProjectManager.Controllers
         [HttpPost("timeAdd")]
         public ActionResult AddTime(Time time)
         {
+            if (time.text.Trim() == "" || time.taskId == 0 || !new Regex(@"^\d{4}(-\d{2}){2}$").IsMatch(time.date))
+                return BadRequest();
             string sql;
             SqlDataReader reader;
             SqlCommand command;

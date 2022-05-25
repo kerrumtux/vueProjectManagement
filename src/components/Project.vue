@@ -66,13 +66,17 @@ export default {
   },
   methods: {
     addTaskE (el) {
-      var request = new XMLHttpRequest()
-      console.log(el.text)
-      const data = JSON.stringify({
-        text: el.text,
+      const data = {
+        text: el.text.trim(),
         projectId: this.elem.id
-      })
+      }
 
+      if (typeof data.text !== 'string' || data.text.trim() === '' || typeof data.projectId !== 'number') {
+        alert('Заполните поле имени')
+        return
+      }
+
+      var request = new XMLHttpRequest()
       request.onreadystatechange = () => {
         if (request.readyState === 4 && request.status === 200) {
           el.id = parseInt(request.responseText)
@@ -83,7 +87,7 @@ export default {
 
       request.open('POST', 'https://localhost:5001/api/taskAdd')
       request.setRequestHeader('content-type', 'application/json')
-      request.send(data)
+      request.send(JSON.stringify(data))
     },
     saveTask () {
       localStorage.setItem('tasks' + this.elem.id, JSON.stringify(this.tasks))
@@ -93,14 +97,11 @@ export default {
       xhr.open('GET', 'https://localhost:5001/api/GetTasks/' + this.elem.id)
       xhr.onload = () => {
         if (xhr.status !== 200) {
-          return
+          alert('Ошибка получения данных с сервера')
         }
-        console.log(typeof JSON.parse(xhr.response))
-        console.log(JSON.parse(xhr.response))
         this.tasks = JSON.parse(xhr.response)
       }
       xhr.send()
-      console.log(xhr)
     },
     deleteTask (id) {
       let val = -1
@@ -145,6 +146,11 @@ export default {
       xhr.send()
     },
     editText (id, text) {
+      if (text.trim() === '') {
+        alert('Ошибка')
+        return
+      }
+
       let val = -1
       let findElemId
       this.tasks.every((e, i) => {
@@ -156,7 +162,10 @@ export default {
         return true
       })
 
-      if (val === -1) return
+      if (val === -1) {
+        alert('Ошибка')
+        return
+      }
 
       var request = new XMLHttpRequest()
       const data = JSON.stringify({
@@ -189,7 +198,6 @@ export default {
       this.addTask = false
     },
     close () {
-      console.log('editText', this.elem.id, this.value)
       this.$emit('editText', this.elem.id, this.value)
       this.edit = false
     }

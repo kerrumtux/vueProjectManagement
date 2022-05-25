@@ -60,11 +60,19 @@ export default {
   methods: {
     addTimeUsed (el) {
       const data = {
-        text: el.text,
+        text: el.text.trim(),
         taskId: this.elem.id,
         date: el.date,
-        numberOfHours: el.numberOfHours
+        numberOfHours: parseInt(el.numberOfHours)
       }
+
+      const validate1 = typeof data.text !== 'string' || data.text === '' || typeof data.taskId !== 'number'
+      const validate2 = !/^\d{4}(-\d{2}){2}$/.test(data.date) || isNaN(data.numberOfHours || data.numberOfHours === 0)
+      if (validate1 || validate2) {
+        alert('Некорректно заполнены поля ввода')
+        return
+      }
+
       let summ = data.numberOfHours
 
       this.timesUsed.forEach(e => {

@@ -17,19 +17,25 @@ export default {
     return {
       projects: this.loadProjectsFromLS(),
       ProjectObj: {
-        id: Number, text: String, active: Boolean
+        id: Number,
+        text: String,
+        active: Boolean
       },
       viewAddProject: false
     }
   },
   methods: {
     addProject (el) {
-      var request = new XMLHttpRequest()
-      console.log(el.text)
-      const data = JSON.stringify({
-        text: el.text
-      })
+      const data = {
+        text: el.text.trim()
+      }
 
+      if (typeof data.text !== 'string' || data.text === '') {
+        alert('Заполните поле имени')
+        return
+      }
+
+      var request = new XMLHttpRequest()
       request.onreadystatechange = () => {
         if (request.readyState === 4 && request.status === 200) {
           el.id = parseInt(request.responseText)
@@ -40,7 +46,7 @@ export default {
 
       request.open('POST', 'https://localhost:5001/api/projectAdd', true)
       request.setRequestHeader('content-type', 'application/json')
-      request.send(data)
+      request.send(JSON.stringify(data))
     },
     deleteProject (id) {
       let val = -1
@@ -86,6 +92,11 @@ export default {
       })
     },
     editText (id, text) {
+      if (text.trim() === '') {
+        alert('Ошибка')
+        return
+      }
+
       let val = -1
       let findElemId
       this.projects.every((e, i) => {
@@ -97,7 +108,10 @@ export default {
         return true
       })
 
-      if (val === -1) return
+      if (val === -1) {
+        alert('Ошибка')
+        return
+      }
 
       var request = new XMLHttpRequest()
       const data = JSON.stringify({
@@ -126,7 +140,6 @@ export default {
         if (xhr.status !== 200) {
           return
         }
-        console.log(typeof JSON.parse(xhr.response))
         console.log(JSON.parse(xhr.response))
         this.projects = JSON.parse(xhr.response)
       }
