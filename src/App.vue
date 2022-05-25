@@ -1,7 +1,8 @@
 <template>
+  <div v-show="viewAddProject" name="addProjectElement" class="addProjectTitle">Add new project</div>
+  <AddElement v-show="viewAddProject" @addElement="addProject" textButton="ADD PROJECT" :addedObject= ProjectObj />
   <Projects :elements="projects" @deleteProject="deleteProject" @activeProject="activeProject" @editText="editText" />
-  <div class="addProjectTitle">Add new project</div>
-  <AddElement @addElement="addProject" textButton="ADD PROJECT" :addedObject= ProjectObj />
+  <div class="viewAddProjectBtn" @click="viewAddProjectEvent">NEW PROJECT</div>
 </template>
 
 <script>
@@ -17,7 +18,8 @@ export default {
       projects: this.loadProjectsFromLS(),
       ProjectObj: {
         id: Number, text: String, active: Boolean
-      }
+      },
+      viewAddProject: false
     }
   },
   methods: {
@@ -32,6 +34,7 @@ export default {
         if (request.readyState === 4 && request.status === 200) {
           el.id = parseInt(request.responseText)
           this.projects = [...this.projects, el]
+          this.viewAddProject = true
         }
       }
 
@@ -128,6 +131,10 @@ export default {
         this.projects = JSON.parse(xhr.response)
       }
       xhr.send()
+    },
+    viewAddProjectEvent () {
+      this.viewAddProject = true
+      window.scrollTo(0, 0)
     }
   }
 }
@@ -141,5 +148,16 @@ export default {
 .addProjectTitle{
   font-size: 20pt;
   margin-bottom: .5%;
+}
+.viewAddProjectBtn{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  padding: 1rem;
+  margin: 2.5rem;
+  background-color: black;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13pt;
 }
 </style>
